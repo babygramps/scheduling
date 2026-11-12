@@ -31,16 +31,13 @@ const mockPeople = [
 ];
 
 async function mockEventApi(browser: Parameters<Parameters<typeof test>[1]>[0]['browser']) {
-  await browser.route('**/scheduling/config.json', async route => {
-    await route.fulfill({ json: { apiUrl: 'http://127.0.0.1:1234/mock-api/' } });
-  });
-  await browser.route('**/mock-api/event/mobile-scroll-test', async route => {
+  await browser.route('**/scheduling/api/event/mobile-scroll-test', async route => {
     await route.fulfill({ json: mockEvent });
   });
-  await browser.route('**/mock-api/event/mobile-scroll-test/people', async route => {
+  await browser.route('**/scheduling/api/event/mobile-scroll-test/people', async route => {
     await route.fulfill({ json: mockPeople });
   });
-  await browser.route('**/mock-api/event/mobile-scroll-test/people/Alice', async route => {
+  await browser.route('**/scheduling/api/event/mobile-scroll-test/people/Alice', async route => {
     await route.fulfill({ json: mockPeople[0] });
   });
 }
@@ -55,7 +52,7 @@ test('event page shows a melting clock while the event loads', async ({ app, bro
   // Hold the event response so the loading state stays on screen until the clock is checked
   let releaseEvent = () => {};
   const eventReleased = new Promise<void>(resolve => { releaseEvent = resolve; });
-  await browser.route('**/mock-api/event/mobile-scroll-test', async route => {
+  await browser.route('**/scheduling/api/event/mobile-scroll-test', async route => {
     await eventReleased;
     await route.fulfill({ json: mockEvent });
   });
@@ -75,7 +72,7 @@ test('melting clock holds still when reduced motion is on', async ({ app, browse
   await browser.emulateMedia({ reducedMotion: 'reduce', colorScheme: 'dark' });
   let releaseEvent = () => {};
   const eventReleased = new Promise<void>(resolve => { releaseEvent = resolve; });
-  await browser.route('**/mock-api/event/mobile-scroll-test', async route => {
+  await browser.route('**/scheduling/api/event/mobile-scroll-test', async route => {
     await eventReleased;
     await route.fulfill({ json: mockEvent });
   });
@@ -212,13 +209,10 @@ test('event page sums up the best times', async ({ app, browser, screen }) => {
       created_at: 1792900300,
     },
   ];
-  await browser.route('**/scheduling/config.json', async route => {
-    await route.fulfill({ json: { apiUrl: 'http://127.0.0.1:1234/mock-api/' } });
-  });
-  await browser.route('**/mock-api/event/best-times-test', async route => {
+  await browser.route('**/scheduling/api/event/best-times-test', async route => {
     await route.fulfill({ json: event });
   });
-  await browser.route('**/mock-api/event/best-times-test/people', async route => {
+  await browser.route('**/scheduling/api/event/best-times-test/people', async route => {
     await route.fulfill({ json: people });
   });
 
@@ -263,13 +257,10 @@ test('best times show a window that ends at midnight without dates', async ({ ap
   const people = [
     { name: 'Alice', availability: ['0600-26102026', '0615-26102026', '0630-26102026', '0645-26102026'], created_at: 1792900100 },
   ];
-  await browser.route('**/scheduling/config.json', async route => {
-    await route.fulfill({ json: { apiUrl: 'http://127.0.0.1:1234/mock-api/' } });
-  });
-  await browser.route('**/mock-api/event/best-times-midnight-test', async route => {
+  await browser.route('**/scheduling/api/event/best-times-midnight-test', async route => {
     await route.fulfill({ json: event });
   });
-  await browser.route('**/mock-api/event/best-times-midnight-test/people', async route => {
+  await browser.route('**/scheduling/api/event/best-times-midnight-test/people', async route => {
     await route.fulfill({ json: people });
   });
 

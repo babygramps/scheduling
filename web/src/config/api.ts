@@ -2,25 +2,16 @@
 
 import { z } from 'zod'
 
-// The API is a Lambda function URL that is only known at deploy time, so the
-// deploy workflow publishes it to /scheduling/config.json. Set
-// NEXT_PUBLIC_API_URL to point a local build somewhere else.
-let apiBase: Promise<URL> | undefined
-const getApiBase = () => {
-  apiBase ??= process.env.NEXT_PUBLIC_API_URL
-    ? Promise.resolve(new URL(process.env.NEXT_PUBLIC_API_URL))
-    : fetch('/scheduling/config.json', { cache: 'no-store' })
-      .then(res => res.json())
-      .then(({ apiUrl }) => new URL(apiUrl))
-  apiBase.catch(() => { apiBase = undefined })
-  return apiBase
-}
+// The API is served next to the app, by ../server, under
+// /scheduling/api/. Set NEXT_PUBLIC_API_URL to point a local build somewhere
+// else. Only called in the browser, so window is always there.
+const getApiBase = () => new URL(process.env.NEXT_PUBLIC_API_URL ?? '/scheduling/api/', window.location.origin)
 
-// Function URLs come with a trailing slash; keep it so paths are appended
-const apiUrl = async (path: string) => new URL(path.replace(/^\//, ''), await getApiBase())
+// The base ends in a slash; keep it so paths are appended
+const apiUrl = (path: string) => new URL(path.replace(/^\//, ''), getApiBase())
 
 /** Public link to an event, as shared with attendees */
-export const eventShareUrl = (eventId: string) => `https://rickrothbart.com/scheduling/event/?id=${encodeURIComponent(eventId)}`
+export const eventShareUrl = (eventId: string) => `https://bigdogflip.com/scheduling/event/?id=${encodeURIComponent(eventId)}`
 /** Private link that lets the creator edit an event from another device */
 export const eventEditUrl = (eventId: string, editKey: string) => `${eventShareUrl(eventId)}&key=${encodeURIComponent(editKey)}`
 /** In-app path to an event (basePath is added by next/link and the router) */
@@ -64,7 +55,7 @@ export const StatsResponse = z.object({
 export type StatsResponse = z.infer<typeof StatsResponse>
 
 const get = async <S extends z.Schema>(url: string, schema: S, auth?: string): Promise<ReturnType<S['parse']>> => {
-  const res = await fetch(await apiUrl(url), {
+  const res = await fetch(apiUrl(url), {
     headers: {
       ...auth && { Authorization: `Bearer ${auth}` },
     },
@@ -75,7 +66,7 @@ const get = async <S extends z.Schema>(url: string, schema: S, auth?: string): P
 }
 
 const post = async <S extends z.Schema>(url: string, schema: S, input: unknown, auth?: string, method = 'POST', headers?: Record<string, string>): Promise<ReturnType<S['parse']>> => {
-  const res = await fetch(await apiUrl(url), {
+  const res = await fetch(apiUrl(url), {
     method,
     headers: {
       'Content-Type': 'application/json',

@@ -1,6 +1,6 @@
 # Ricky Dicky's Schedule Time: API for agents
 
-> A group scheduling app at https://rickrothbart.com/scheduling/. Someone creates
+> A group scheduling app at https://bigdogflip.com/scheduling/. Someone creates
 > an event with candidate dates and hours, shares the link, and each person marks
 > when they are free. Everything the website does goes through the JSON API below,
 > so an agent can do all of it: create events, read who is free, and add
@@ -8,10 +8,7 @@
 
 ## Base URL
 
-Fetch `https://rickrothbart.com/scheduling/config.json`; the API base is its
-`apiUrl` field. At the time of writing it is:
-
-    https://6v2bktmvcmgbmsy3bikb74v5eq0goxlb.lambda-url.us-west-1.on.aws/
+    https://bigdogflip.com/scheduling/api/
 
 Paths below are relative to that base. Requests and responses are JSON. No API key.
 
@@ -41,8 +38,8 @@ Body: `{"name": "Team lunch", "times": ["1700-25102026", ...], "timezone": "Amer
 (`created_at` is Unix seconds.)
 `edit_key` is returned only here and is needed to edit the event later. Keep it
 private and give it only to the person who asked you to create the event.
-Share link for people: `https://rickrothbart.com/scheduling/event/?id=<id>`
-The creator's private edit link is `https://rickrothbart.com/scheduling/event/?id=<id>&key=<edit_key>`;
+Share link for people: `https://bigdogflip.com/scheduling/event/?id=<id>`
+The creator's private edit link is `https://bigdogflip.com/scheduling/event/?id=<id>&key=<edit_key>`;
 opening it in a browser lets them edit the event on the website too.
 
 ### PATCH /event/{id}: edit an event (creator only)
@@ -91,7 +88,7 @@ list, and PATCH it with the edit key.
 
 ## Example
 
-    API=$(curl -s https://rickrothbart.com/scheduling/config.json | jq -r .apiUrl)
+    API=https://bigdogflip.com/scheduling/api/
     curl -s -X POST "${API}event" -H 'content-type: application/json' \
       -d '{"name":"Team lunch","times":["1700-25102026","1800-25102026"],"timezone":"America/Los_Angeles"}'
     curl -s "${API}event/team-lunch-123456/people/Alice"

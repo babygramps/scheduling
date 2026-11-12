@@ -10,7 +10,7 @@ import './global.css'
 const karla = Karla({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://rickrothbart.com/scheduling/'),
+  metadataBase: new URL('https://bigdogflip.com/scheduling/'),
   title: {
     absolute: "Ricky Dicky's Schedule Time",
     template: "%s - Ricky Dicky's Schedule Time",

@@ -1,0 +1,16 @@
+[Unit]
+Description=Deploy new scheduling main commits through Coolify
+After=network-online.target docker.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=servy
+# Holds COOLIFY_APP_UUID=<the scheduling application's UUID in Coolify>
+EnvironmentFile=/home/servy/.config/scheduling/auto-deploy.env
+ExecStart=/usr/bin/python3 /home/servy/apps/scheduling-auto-deploy.py
+TimeoutStartSec=100
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=read-only

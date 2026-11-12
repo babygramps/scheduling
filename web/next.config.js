@@ -1,8 +1,8 @@
 /** @type {import('next').NextConfig} */
 module.exports = {
-  // Static export served from S3 at rickrothbart.com/scheduling/ (see
-  // .github/workflows/deploy.yml). trailingSlash makes every page an
-  // index.html under its own folder, which is what the S3 origin serves.
+  // Static export served at bigdogflip.com/scheduling/ by
+  // ../server/server.mjs. trailingSlash makes every page an index.html
+  // under its own folder, which is what that server looks for.
   output: 'export',
   basePath: '/scheduling',
   trailingSlash: true,
