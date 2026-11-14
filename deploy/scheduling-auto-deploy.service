@@ -2,6 +2,8 @@
 Description=Deploy new scheduling main commits through Coolify
 After=network-online.target docker.service
 Wants=network-online.target
+# Does nothing until the env file exists, so the units can be installed first
+ConditionPathExists=/home/servy/.config/scheduling/auto-deploy.env
 
 [Service]
 Type=oneshot

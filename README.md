@@ -60,6 +60,9 @@ image. A failed build leaves the running container in place.
 Coolify application settings:
 
 - Build pack Dockerfile, port 3000, no domain.
+- Health check on `/healthz`, port 3000, host `127.0.0.1`. Coolify's default
+  host `localhost` resolves to IPv6 inside the container, where the server
+  does not listen, and the deploy is rolled back as unhealthy.
 - Destination `app-bigdog`, network alias `scheduling`. The
   `bigdogflip-serverdude` Cloudflare tunnel sends
   `bigdogflip.com/scheduling*` to `http://scheduling:3000`.
